@@ -1,0 +1,101 @@
+<body>
+
+</body>
+<script>
+
+    function insert_spaces_before_inner_initial_capital_letters(input) {
+
+        var output = [];
+
+        for (var i = 0; i < (input.length - 1); i++) {
+
+            var current = input[i];
+            var previous = i == 0 ? '' : input[i - 1];
+            var next = i == input.length - 1 ? '' : input[i + 1];
+
+            if (( i != 0 && current == current.toUpperCase() && current != ' ' && previous != ' ' ) &&
+                ( previous == previous.toLowerCase() || next == next.toLowerCase() )) {
+                output.push(" " + current);
+            } else {
+                output.push(current);
+            }
+
+        }
+
+        output.push(input[input.length - 1]);
+
+        return output.join('');
+    }
+
+    function spacecamel(s) {
+        return s.replace(/([a-z])([A-Z])/g, '$1 $2');
+    }
+
+    function unCamelCase(str) {
+        return str
+        // insert a space between lower & upper
+            .replace(/([a-z])([A-Z])/g, '$1 $2')
+            // space before last upper in a sequence followed by lower
+            .replace(/\b([A-Z]+)([A-Z])([a-z])/, '$1 $2$3')
+            // uppercase the first character
+            .replace(/^./, function (str) {
+                return str.toUpperCase();
+            })
+    }
+
+    function foo(input){
+        return input
+        // insert a space before all caps
+            .replace(/([A-Z])/g, ' $1')
+            // uppercase the first character
+            .replace(/^./, function(str){ return str.toUpperCase(); })
+    }
+
+    function splitCamelCaseToString(s) {
+        return s.split(/(?=[A-Z])/).map(function(p) {
+            return p.charAt(0).toUpperCase() + p.slice(1);
+        }).join(' ');
+    }
+    function test_insert_spaces() {
+
+        var input_to_expected_output_map = {
+            "Already Perfect": "Already Perfect",
+            "leave me alone": "leave me alone",
+            "weirdONE": "weird ONE",
+            "Parse ME": "Parse ME",
+            "ParseMePlease": "Parse Me Please",
+            "ParseNPIPlease": "Parse NPI Please",
+            "ParseME": "Parse ME"
+        };
+
+        var keys = Object.keys(input_to_expected_output_map);
+        var size = keys.length;
+
+        var results = [];
+        results.push('<pre>');
+
+        for (var i = 0; i < size; i++) {
+
+            var input = keys[i];
+            var expected = input_to_expected_output_map[input];
+
+            var output = insert_spaces_before_inner_initial_capital_letters(input);
+//            var output = spacecamel(input);
+//            var output = unCamelCase(input);
+//            var output = foo(input);
+//            var output = splitCamelCaseToString(input);
+
+            if (output != expected) {
+                results.push('ERROR: "' + output + '" != "' + expected + '" for input: "' + input + '".');
+            } else {
+                results.push('SUCCESS: "' + output + '" == "' + expected + '" for input: "' + input + '".');
+            }
+
+        }
+        results.push('</pre>');
+        document.body.innerHTML = results.join('\n');
+
+    }
+    //    debugger;
+    test_insert_spaces();
+</script>
